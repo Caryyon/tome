@@ -1,0 +1,353 @@
+{
+  "tome": {
+    "version": "1.0.0",
+    "format": "entity"
+  },
+  "meta": {
+    "id": "vehicle-sf-001-wanderer",
+    "type": "vehicle",
+    "created": "2025-01-15T10:00:00.000Z",
+    "modified": "2025-01-15T10:00:00.000Z",
+    "tags": ["starship", "explorer", "science", "medium"],
+    "system": "Space Opera"
+  },
+  "identity": {
+    "name": {
+      "primary": "SSV Wanderer",
+      "alternate": ["The Wanderer"],
+      "pronunciation": "wahn-der-er"
+    },
+    "classification": {
+      "class": "Explorer-class",
+      "manufacturer": "Stellar Dynamics Corp",
+      "registry": "NX-4721",
+      "crew": 25,
+      "mission": "Deep space exploration"
+    },
+    "description": {
+      "short": "A sleek medium-sized exploration vessel built for long-range scientific missions",
+      "full": "The SSV Wanderer is a state-of-the-art exploration vessel designed for extended deep space missions. Equipped with advanced sensors, laboratories, and defensive systems, she's capable of surviving months in uncharted space while conducting comprehensive scientific research.",
+      "appearance": "Streamlined hull with distinctive blue and silver plating. Two large sensor arrays extend from the dorsal section. The ship features rotating habitat sections for artificial gravity."
+    }
+  },
+  "properties": {
+    "static": {
+      "length": "285 meters",
+      "mass": "45,000 tons",
+      "maxSpeed": "0.75c sublight",
+      "warpCapability": "Factor 7.5",
+      "crewCapacity": 25,
+      "passengers": 10,
+      "cargoCapacity": "2,500 cubic meters",
+      "manufacturer": "Stellar Dynamics Corp",
+      "yearBuilt": 2384,
+      "serviceLife": "50 years expected"
+    },
+    "dynamic": {
+      "currentSpeed": "0.2c",
+      "heading": "Galactic North 45°",
+      "alertStatus": "green",
+      "crewMorale": 85
+    },
+    "computed": {
+      "turnRadius": "15,000 km",
+      "sensorRange": "5 light-years",
+      "jumpRange": "100 light-years"
+    }
+  },
+  "resources": {
+    "hullIntegrity": {
+      "current": 100,
+      "maximum": 100,
+      "type": "pool"
+    },
+    "shields": {
+      "current": 100,
+      "maximum": 100,
+      "regeneration": {
+        "rate": 5,
+        "interval": "round"
+      },
+      "type": "pool"
+    },
+    "power": {
+      "current": 850,
+      "maximum": 1000,
+      "regeneration": {
+        "rate": 50,
+        "interval": "round"
+      },
+      "type": "pool",
+      "notes": "Fusion reactor output"
+    },
+    "fuel": {
+      "current": 75,
+      "maximum": 100,
+      "type": "pool",
+      "notes": "Antimatter fuel percentage"
+    },
+    "lifesupport": {
+      "current": 100,
+      "maximum": 100,
+      "type": "pool",
+      "notes": "Capacity for 30 days at current crew"
+    },
+    "ammunition": {
+      "torpedoes": {
+        "current": 24,
+        "maximum": 30
+      },
+      "missiles": {
+        "current": 48,
+        "maximum": 60
+      }
+    }
+  },
+  "capabilities": {
+    "actions": [
+      {
+        "id": "warp-jump",
+        "name": "Warp Jump",
+        "description": "Engage warp drive to travel faster than light",
+        "type": "propulsion",
+        "requirements": {
+          "fuel": 10,
+          "minimumPower": 400
+        },
+        "costs": {
+          "fuel": 5,
+          "power": 200
+        },
+        "metadata": {
+          "cooldown": "10 minutes",
+          "range": "100 light-years"
+        }
+      },
+      {
+        "id": "fire-torpedoes",
+        "name": "Fire Photon Torpedoes",
+        "description": "Launch high-yield antimatter torpedoes",
+        "type": "weapons",
+        "costs": {
+          "power": 50,
+          "ammunition.torpedoes": 2
+        },
+        "effects": [
+          {
+            "target": "enemy",
+            "modification": "damage",
+            "value": "8d10 explosive"
+          }
+        ]
+      },
+      {
+        "id": "fire-plasma-cannons",
+        "name": "Fire Plasma Cannons",
+        "description": "Unleash directed energy weapons",
+        "type": "weapons",
+        "costs": {
+          "power": 100
+        },
+        "effects": [
+          {
+            "target": "enemy",
+            "modification": "damage",
+            "value": "6d8 energy"
+          }
+        ],
+        "metadata": {
+          "fireRate": "continuous"
+        }
+      },
+      {
+        "id": "deploy-probe",
+        "name": "Deploy Sensor Probe",
+        "description": "Launch automated probe for remote sensing",
+        "type": "scientific",
+        "costs": {
+          "power": 10
+        }
+      },
+      {
+        "id": "scan-anomaly",
+        "name": "Scan Anomaly",
+        "description": "Perform detailed sensor analysis of spatial phenomena",
+        "type": "scientific",
+        "costs": {
+          "power": 30
+        },
+        "metadata": {
+          "duration": "1 hour"
+        }
+      },
+      {
+        "id": "emergency-warp",
+        "name": "Emergency Warp",
+        "description": "Execute emergency faster-than-light escape",
+        "type": "propulsion",
+        "costs": {
+          "fuel": 15,
+          "power": 300
+        },
+        "metadata": {
+          "range": "50 light-years",
+          "risk": "high strain on systems"
+        }
+      }
+    ],
+    "reactions": [
+      {
+        "id": "raise-shields",
+        "name": "Raise Shields",
+        "description": "Divert power to defensive shields",
+        "type": "defensive",
+        "costs": {
+          "power": 50
+        },
+        "effects": [
+          {
+            "target": "self",
+            "modification": "shields",
+            "value": "+50%"
+          }
+        ]
+      },
+      {
+        "id": "evasive-maneuvers",
+        "name": "Evasive Maneuvers",
+        "description": "Execute rapid course changes to avoid incoming fire",
+        "type": "defensive",
+        "costs": {
+          "power": 30
+        }
+      }
+    ],
+    "passive": [
+      {
+        "id": "long-range-sensors",
+        "name": "Long-Range Sensors",
+        "description": "Advanced sensor array capable of detecting objects and phenomena up to 5 light-years away"
+      },
+      {
+        "id": "self-repair",
+        "name": "Automated Repair Systems",
+        "description": "Nanobots constantly repair minor hull damage",
+        "effects": [
+          {
+            "target": "self",
+            "modification": "hullIntegrity",
+            "value": "+1 per hour"
+          }
+        ]
+      },
+      {
+        "id": "scientific-labs",
+        "name": "Scientific Laboratories",
+        "description": "State-of-the-art research facilities for xenobiology, physics, and chemistry"
+      },
+      {
+        "id": "medical-bay",
+        "name": "Advanced Medical Bay",
+        "description": "Equipped to handle all medical emergencies with surgical suite and stasis pods"
+      }
+    ]
+  },
+  "inventory": {
+    "items": [
+      {
+        "id": "shuttlecraft-01",
+        "name": "Type-7 Shuttlecraft 'Pioneer'",
+        "quantity": 1,
+        "equipped": true,
+        "location": "shuttlebay",
+        "notes": "Primary shuttle for planetary missions"
+      },
+      {
+        "id": "shuttlecraft-02",
+        "name": "Type-7 Shuttlecraft 'Horizon'",
+        "quantity": 1,
+        "equipped": true,
+        "location": "shuttlebay",
+        "notes": "Backup shuttle"
+      },
+      {
+        "id": "eva-suits",
+        "name": "EVA Suits",
+        "quantity": 30,
+        "equipped": false,
+        "location": "airlock storage"
+      },
+      {
+        "id": "emergency-supplies",
+        "name": "Emergency Supplies",
+        "quantity": 1,
+        "equipped": false,
+        "location": "cargo bay",
+        "notes": "30-day emergency rations and medical supplies"
+      },
+      {
+        "id": "planetary-rover",
+        "name": "All-Terrain Rover",
+        "quantity": 2,
+        "equipped": false,
+        "location": "cargo bay"
+      }
+    ],
+    "capacity": {
+      "current": 1200,
+      "maximum": 2500,
+      "units": "cubic meters"
+    }
+  },
+  "narrative": {
+    "background": "The SSV Wanderer was commissioned in 2384 as part of the Deep Space Exploration Initiative. She has completed 15 successful long-range missions, discovering three new star systems and making first contact with two alien civilizations.",
+    "personality": "The ship has developed a reputation among its crew as being 'lucky' - narrowly avoiding disasters on multiple occasions. The crew believes the ship has a personality of her own.",
+    "goals": [
+      "Complete the survey of the Kepler Expanse",
+      "Search for signs of the lost colony ship Endeavor",
+      "Map gravitational anomalies in Sector 7"
+    ],
+    "history": [
+      {
+        "date": "2384-03-15",
+        "event": "Commissioned and launched from Mars Orbital Shipyards"
+      },
+      {
+        "date": "2385-07-22",
+        "event": "Discovered habitable planet in the Centauri system"
+      },
+      {
+        "date": "2386-11-03",
+        "event": "Survived encounter with spatial anomaly in the Void"
+      },
+      {
+        "date": "2387-04-18",
+        "event": "Made first contact with the Xel'nari civilization"
+      },
+      {
+        "date": "2388-09-30",
+        "event": "Underwent major refit with upgraded weapons and sensors"
+      }
+    ],
+    "notes": "Currently on a 2-year mission to explore the Kepler Expanse, a largely uncharted region of space."
+  },
+  "extensions": {
+    "spaceopera": {
+      "warpFactors": {
+        "1": "1c",
+        "2": "8c",
+        "3": "27c",
+        "4": "64c",
+        "5": "125c",
+        "6": "216c",
+        "7": "343c",
+        "7.5": "421c"
+      },
+      "sensorGrid": {
+        "resolution": "Class-A",
+        "range": "5 light-years",
+        "accuracy": "99.7%"
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor Test</title>
+    <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Test Page</h1>
+            <p class="subtitle">Testing if CSS and JS load correctly</p>
+        </header>
+
+        <div class="toolbar">
+            <button id="testBtn" class="btn btn-primary">Click Me</button>
+        </div>
+
+        <div id="output" style="padding: 20px; background: var(--bg-primary); border-radius: 8px; margin-top: 20px;">
+            <p>If you can see this styled correctly, CSS is working.</p>
+        </div>
+    </div>
+
+    <script type="module">
+        console.log('JavaScript is loading...');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded successfully');
+
+            const btn = document.getElementById('testBtn');
+            const output = document.getElementById('output');
+
+            btn.addEventListener('click', () => {
+                output.innerHTML = '<p style="color: green;">✅ JavaScript is working! Button was clicked at ' + new Date().toLocaleTimeString() + '</p>';
+            });
+
+            output.innerHTML += '<p style="color: blue;">✅ JavaScript loaded successfully</p>';
+        });
+    </script>
+</body>
+</html>

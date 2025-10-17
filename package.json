@@ -1,0 +1,30 @@
+{
+  "name": "tome",
+  "version": "1.0.0",
+  "description": "Tabletop Open Markup for Entities - Universal RPG entity format",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "test": "node test-lib.mjs",
+    "editor": "http-server editor -p 8080 -o"
+  },
+  "keywords": [
+    "rpg",
+    "tabletop",
+    "entity",
+    "character",
+    "format",
+    "universal"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1"
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "tome": {
+    "version": "1.0.0",
+    "format": "entity"
+  },
+  "meta": {
+    "id": "item-weapon-001-flamesword",
+    "type": "item",
+    "created": "2025-01-15T09:00:00.000Z",
+    "modified": "2025-01-15T09:00:00.000Z",
+    "tags": ["weapon", "sword", "magic", "fire", "legendary"]
+  },
+  "identity": {
+    "name": {
+      "primary": "Flamebrand",
+      "alternate": ["The Eternal Flame", "Sunblade"]
+    },
+    "classification": {
+      "category": "Weapon",
+      "subcategory": "Longsword",
+      "rarity": "Legendary",
+      "attunement": "Required"
+    },
+    "description": {
+      "short": "A magnificent longsword wreathed in eternal flames",
+      "full": "This legendary blade was forged in the heart of a dying star by the ancient smith Thalgrim. Its blade burns with an eternal flame that never dims, and it is said to have been wielded by heroes in battles against darkness itself.",
+      "appearance": "The blade appears to be made of pure golden metal that pulses with inner fire. Flames dance along its edge without consuming it. The crossguard is shaped like phoenix wings, and the pommel holds a ruby that glows like an ember."
+    }
+  },
+  "properties": {
+    "static": {
+      "weight": "3 lbs",
+      "length": "3.5 feet",
+      "material": "Stargold",
+      "value": "priceless",
+      "durability": "indestructible"
+    },
+    "dynamic": {
+      "fireIntensity": "maximum"
+    }
+  },
+  "capabilities": {
+    "actions": [
+      {
+        "id": "flame-strike",
+        "name": "Flame Strike",
+        "description": "Strike with the burning blade, dealing both physical and fire damage",
+        "type": "attack",
+        "effects": [
+          {
+            "target": "enemy",
+            "modification": "damage",
+            "value": "2d8 slashing + 2d6 fire"
+          }
+        ]
+      },
+      {
+        "id": "pillar-of-flame",
+        "name": "Pillar of Flame",
+        "description": "Slam the sword into the ground, creating a pillar of fire",
+        "type": "area-attack",
+        "costs": {
+          "charges": 1
+        },
+        "effects": [
+          {
+            "target": "area",
+            "modification": "damage",
+            "value": "8d6 fire",
+            "duration": "instant"
+          }
+        ],
+        "metadata": {
+          "area": "15-foot radius",
+          "cooldown": "dawn"
+        }
+      },
+      {
+        "id": "illuminate",
+        "name": "Illuminate",
+        "description": "The sword sheds bright light in a 30-foot radius",
+        "type": "utility",
+        "costs": {},
+        "metadata": {
+          "duration": "at will"
+        }
+      }
+    ],
+    "passive": [
+      {
+        "id": "eternal-flame",
+        "name": "Eternal Flame",
+        "description": "The blade is always wreathed in flames that provide light and cannot be extinguished"
+      },
+      {
+        "id": "fire-immunity",
+        "name": "Fire Immunity",
+        "description": "While attuned to this weapon, you are immune to fire damage"
+      },
+      {
+        "id": "phoenix-rebirth",
+        "name": "Phoenix Rebirth",
+        "description": "Once per week, if you would be killed, you instead return to life with half health in a burst of flame",
+        "metadata": {
+          "cooldown": "1 week"
+        }
+      },
+      {
+        "id": "demon-bane",
+        "name": "Demon Bane",
+        "description": "Deals double damage to demons and fiends"
+      }
+    ]
+  },
+  "resources": {
+    "charges": {
+      "current": 3,
+      "maximum": 3,
+      "regeneration": {
+        "rate": 3,
+        "interval": "dawn"
+      },
+      "type": "pool",
+      "notes": "Used for special abilities"
+    }
+  },
+  "narrative": {
+    "background": "Flamebrand was forged by the legendary smith Thalgrim at the request of the Sun God Aurion. It was created to combat the forces of darkness during the Age of Shadows, and has been passed down through generations of heroes. The blade is sentient and chooses its own wielders, refusing to serve those with dark hearts.",
+    "personality": "The sword has a proud and noble personality. It communicates through feelings and impressions rather than words, guiding its wielder toward acts of heroism and justice.",
+    "bonds": [
+      {
+        "entity": "Thalgrim the Eternal",
+        "relationship": "creator",
+        "description": "The ancient smith who forged the blade"
+      },
+      {
+        "entity": "Aurion, God of the Sun",
+        "relationship": "patron deity",
+        "description": "Blessed the sword with divine power"
+      }
+    ],
+    "history": [
+      {
+        "date": "Age of Creation",
+        "event": "Forged by Thalgrim in the heart of a dying star"
+      },
+      {
+        "date": "Age of Shadows",
+        "event": "Wielded by the hero Aric Sunheart to defeat the Demon Lord"
+      },
+      {
+        "date": "Modern Era",
+        "event": "Lost in the Ruins of Shadowfen, awaiting a new champion"
+      }
+    ],
+    "notes": "The sword is currently missing, last seen in the ancient ruins of Shadowfen. Legends say it will reveal itself only to a worthy hero in their darkest hour."
+  }
+}

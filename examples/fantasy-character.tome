@@ -1,0 +1,284 @@
+{
+  "tome": {
+    "version": "1.0.0",
+    "format": "entity"
+  },
+  "meta": {
+    "id": "char-001-fantasy-wizard",
+    "type": "character",
+    "created": "2025-01-15T12:00:00.000Z",
+    "modified": "2025-01-15T14:30:00.000Z",
+    "tags": ["wizard", "elf", "magic", "scholar"],
+    "system": "Generic Fantasy"
+  },
+  "identity": {
+    "name": {
+      "primary": "Elara Moonwhisper",
+      "alternate": ["The Silver Sage", "Moonshadow"],
+      "pronunciation": "eh-LAH-rah moon-WHIS-per"
+    },
+    "classification": {
+      "race": "High Elf",
+      "profession": "Archmage",
+      "rank": "Court Wizard",
+      "experience": "Veteran"
+    },
+    "description": {
+      "short": "An elderly elven wizard with silver hair and piercing violet eyes",
+      "full": "Elara is a renowned archmage who has served the kingdom for over three centuries. Her mastery of elemental magic is legendary, and she's known for her wisdom and patience in teaching young mages.",
+      "appearance": "Tall and graceful, with flowing silver hair that seems to shimmer with its own light. Wears elegant robes of deep purple adorned with silver moon symbols. Her violet eyes seem to see beyond the mortal realm.",
+      "personality": "Wise, patient, and contemplative. Values knowledge above all else. Can be stern with those who disrespect magic, but deeply caring toward her students."
+    }
+  },
+  "properties": {
+    "static": {
+      "intellect": 20,
+      "wisdom": 18,
+      "charisma": 14,
+      "agility": 12,
+      "constitution": 10,
+      "might": 8,
+      "age": 347,
+      "height": "6'1\"",
+      "weight": "130 lbs"
+    },
+    "dynamic": {
+      "focus": 85,
+      "fatigue": 15,
+      "reputation": "renowned"
+    },
+    "computed": {
+      "magicAttackBonus": 8,
+      "spellDifficulty": 18,
+      "carryCapacity": 80
+    }
+  },
+  "resources": {
+    "vitality": {
+      "current": 52,
+      "maximum": 60,
+      "type": "pool"
+    },
+    "mana": {
+      "current": 120,
+      "maximum": 150,
+      "regeneration": {
+        "rate": 15,
+        "interval": "short rest"
+      },
+      "type": "pool"
+    },
+    "willpower": {
+      "current": 8,
+      "maximum": 10,
+      "type": "pool"
+    }
+  },
+  "capabilities": {
+    "actions": [
+      {
+        "id": "arcane-bolt",
+        "name": "Arcane Bolt",
+        "description": "Launch a bolt of pure magical energy at a target",
+        "type": "evocation",
+        "costs": {
+          "mana": 10
+        },
+        "effects": [
+          {
+            "target": "enemy",
+            "modification": "damage",
+            "value": "3d8 force"
+          }
+        ]
+      },
+      {
+        "id": "fireball",
+        "name": "Fireball",
+        "description": "Hurl an explosive sphere of flame",
+        "type": "evocation",
+        "costs": {
+          "mana": 30
+        },
+        "effects": [
+          {
+            "target": "area",
+            "modification": "damage",
+            "value": "8d6 fire",
+            "duration": "instant"
+          }
+        ]
+      },
+      {
+        "id": "teleport",
+        "name": "Teleport",
+        "description": "Instantly transport yourself to a known location",
+        "type": "conjuration",
+        "costs": {
+          "mana": 50,
+          "willpower": 2
+        }
+      },
+      {
+        "id": "dispel-magic",
+        "name": "Dispel Magic",
+        "description": "End magical effects on a target",
+        "type": "abjuration",
+        "costs": {
+          "mana": 20
+        }
+      }
+    ],
+    "reactions": [
+      {
+        "id": "counterspell",
+        "name": "Counterspell",
+        "description": "Interrupt and nullify an enemy's spell",
+        "type": "abjuration",
+        "costs": {
+          "mana": 25,
+          "willpower": 1
+        }
+      },
+      {
+        "id": "shield",
+        "name": "Arcane Shield",
+        "description": "Conjure a barrier of force to deflect attacks",
+        "type": "abjuration",
+        "costs": {
+          "mana": 15
+        },
+        "effects": [
+          {
+            "target": "self",
+            "modification": "defense",
+            "value": "+5",
+            "duration": "1 round"
+          }
+        ]
+      }
+    ],
+    "passive": [
+      {
+        "id": "arcane-recovery",
+        "name": "Arcane Recovery",
+        "description": "Naturally recover mana faster than normal mages",
+        "effects": [
+          {
+            "target": "self",
+            "modification": "mana regeneration",
+            "value": "+50%"
+          }
+        ]
+      },
+      {
+        "id": "elven-longevity",
+        "name": "Elven Longevity",
+        "description": "Extended lifespan and resistance to aging effects"
+      },
+      {
+        "id": "magical-expertise",
+        "name": "Magical Expertise",
+        "description": "Decades of study grant advantage on magical knowledge checks"
+      }
+    ]
+  },
+  "inventory": {
+    "items": [
+      {
+        "id": "staff-of-moonlight",
+        "name": "Staff of Moonlight",
+        "quantity": 1,
+        "equipped": true,
+        "location": "right hand",
+        "notes": "Ancient staff passed down through generations"
+      },
+      {
+        "id": "spellbook",
+        "name": "Elara's Grimoire",
+        "quantity": 1,
+        "equipped": false,
+        "location": "belt pouch",
+        "notes": "Contains over 200 spells"
+      },
+      {
+        "id": "potion-healing",
+        "name": "Healing Potion",
+        "quantity": 3,
+        "equipped": false,
+        "location": "belt pouch"
+      },
+      {
+        "id": "scroll-teleport-circle",
+        "name": "Scroll of Teleport Circle",
+        "quantity": 2,
+        "equipped": false,
+        "location": "scroll case"
+      },
+      {
+        "id": "amulet-protection",
+        "name": "Amulet of Protection",
+        "quantity": 1,
+        "equipped": true,
+        "location": "neck",
+        "notes": "Grants +2 to defense"
+      }
+    ],
+    "capacity": {
+      "current": 45,
+      "maximum": 80,
+      "units": "lbs"
+    },
+    "currency": {
+      "gold": 2850,
+      "silver": 150,
+      "copper": 75
+    }
+  },
+  "narrative": {
+    "background": "Born in the ancient Moonwood Forest, Elara showed exceptional magical talent from a young age. She studied at the Tower of Stars for a century before becoming the youngest archmage in the kingdom's history. She has served as Court Wizard for the past two hundred years, advising five generations of monarchs.",
+    "personality": "Elara values knowledge and wisdom above all else. She believes that magic is a sacred trust that must be used responsibly. While she can be stern with those who disrespect the arcane arts, she is deeply caring toward her students and will go to great lengths to protect the innocent.",
+    "goals": [
+      "Preserve ancient magical knowledge",
+      "Train the next generation of mages",
+      "Uncover the secrets of the Void Between Stars",
+      "Prevent the rise of dark magic in the kingdom"
+    ],
+    "bonds": [
+      {
+        "entity": "King Aldric III",
+        "relationship": "advisor",
+        "description": "Has served the current king for 25 years"
+      },
+      {
+        "entity": "Theron Stormwind",
+        "relationship": "apprentice",
+        "description": "Her most promising student"
+      },
+      {
+        "entity": "The Council of Mages",
+        "relationship": "member",
+        "description": "Senior member and former leader"
+      }
+    ],
+    "history": [
+      {
+        "date": "347 years ago",
+        "event": "Born in Moonwood Forest"
+      },
+      {
+        "date": "247 years ago",
+        "event": "Became archmage and Court Wizard"
+      },
+      {
+        "date": "150 years ago",
+        "event": "Sealed the Rift of Shadows, preventing demon invasion"
+      },
+      {
+        "date": "50 years ago",
+        "event": "Founded the Academy of High Magic"
+      }
+    ],
+    "notes": "Elara is haunted by the memory of losing her mentor to dark magic. This drives her dedication to preventing others from falling to corruption."
+  }
+}

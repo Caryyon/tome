@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tome Editor - Universal RPG Entity Format</title>
+    <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Tome Editor</h1>
+            <p class="subtitle">Universal RPG Entity Format</p>
+            <div class="theme-toggle">
+                <button id="themeToggle" aria-label="Toggle theme">🌙</button>
+            </div>
+        </header>
+
+        <div class="toolbar">
+            <button id="newEntity" class="btn btn-primary">New Entity</button>
+            <button id="loadFile" class="btn">Load .tome</button>
+            <button id="saveFile" class="btn btn-success">Save .tome</button>
+            <button id="validateBtn" class="btn">Validate</button>
+            <a href="examples.html" class="btn" style="text-decoration: none; display: inline-flex; align-items: center;">Examples</a>
+            <a href="docs.html" class="btn" style="text-decoration: none; display: inline-flex; align-items: center;">Docs</a>
+            <input type="file" id="fileInput" accept=".tome,.json" style="display: none;">
+        </div>
+
+        <div class="editor-layout">
+            <div class="form-panel">
+                <h2>Entity Details</h2>
+
+                <div class="form-section">
+                    <h3>Required Information</h3>
+
+                    <div class="form-group">
+                        <label for="entityName">Name *</label>
+                        <input type="text" id="entityName" placeholder="Entity name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="entityType">Type *</label>
+                        <select id="entityType" required>
+                            <option value="character">Character</option>
+                            <option value="npc">NPC</option>
+                            <option value="creature">Creature</option>
+                            <option value="item">Item</option>
+                            <option value="location">Location</option>
+                            <option value="vehicle">Vehicle</option>
+                            <option value="ability">Ability</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="entityId">ID</label>
+                        <input type="text" id="entityId" placeholder="Auto-generated" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="entitySystem">System (Optional)</label>
+                        <input type="text" id="entitySystem" placeholder="e.g., D&D 5e, GURPS, Custom">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="entityTags">Tags (comma-separated)</label>
+                        <input type="text" id="entityTags" placeholder="wizard, elf, magic">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Description</h3>
+
+                    <div class="form-group">
+                        <label for="descShort">Short Description</label>
+                        <input type="text" id="descShort" placeholder="One-line description">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descFull">Full Description</label>
+                        <textarea id="descFull" rows="3" placeholder="Detailed description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descAppearance">Appearance</label>
+                        <textarea id="descAppearance" rows="2" placeholder="Physical description"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Properties</h3>
+                    <p class="help-text">Add any properties relevant to your entity. These can be numbers, strings, or formulas.</p>
+
+                    <div class="property-list" id="propertyList">
+                        <!-- Properties will be added here -->
+                    </div>
+
+                    <button id="addProperty" class="btn btn-sm">+ Add Property</button>
+                </div>
+
+                <div class="form-section">
+                    <h3>Resources</h3>
+                    <p class="help-text">Resources are pools like health, energy, ammunition, etc.</p>
+
+                    <div class="resource-list" id="resourceList">
+                        <!-- Resources will be added here -->
+                    </div>
+
+                    <button id="addResource" class="btn btn-sm">+ Add Resource</button>
+                </div>
+
+                <div class="form-section">
+                    <h3>Capabilities</h3>
+                    <p class="help-text">Actions, reactions, and passive abilities.</p>
+
+                    <div class="capability-list" id="capabilityList">
+                        <!-- Capabilities will be added here -->
+                    </div>
+
+                    <button id="addCapability" class="btn btn-sm">+ Add Capability</button>
+                </div>
+            </div>
+
+            <div class="preview-panel">
+                <div class="preview-header">
+                    <h2>JSON Preview</h2>
+                    <button id="copyJson" class="btn btn-sm">Copy</button>
+                </div>
+                <pre id="jsonPreview" class="json-preview"></pre>
+
+                <div class="validation-results" id="validationResults" style="display: none;">
+                    <h3>Validation Results</h3>
+                    <div id="validationContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="editor.js"></script>
+</body>
+</html>
