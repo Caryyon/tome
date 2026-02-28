@@ -9,6 +9,14 @@ meta:
   parent: year-zero-engine-base
   tags: [sci-fi, cyberpunk]
 
+terminology:
+  attributes: Attributes
+  skills: Skills
+  positive_traits: Talents
+  negative_traits: Drawbacks
+  traits: Talents & Drawbacks
+  character_points: XP
+
 mechanics:
   dice: [6]
   roll_type: pool

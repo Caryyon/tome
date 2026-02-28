@@ -1,0 +1,95 @@
+meta:
+  id: world-of-darkness
+  name: World of Darkness (Chronicles)
+  publisher: Onyx Path Publishing
+  version: "cod"
+  engine: storyteller
+  tags: [horror, gothic, modern, supernatural]
+
+terminology:
+  attributes: Attributes
+  skills: Skills
+  positive_traits: Merits
+  negative_traits: Flaws
+  traits: Merits & Flaws
+  character_points: Experiences
+
+mechanics:
+  dice: [10]
+  roll_type: pool
+  success_target: 8
+  exceptional_success: 5
+  dramatic_failure: true
+
+attributes:
+  intelligence:  { label: Intelligence, min: 1, max: 5, default: 1 }
+  wits:          { label: Wits,         min: 1, max: 5, default: 1 }
+  resolve:       { label: Resolve,      min: 1, max: 5, default: 1 }
+  strength:      { label: Strength,     min: 1, max: 5, default: 1 }
+  dexterity:     { label: Dexterity,    min: 1, max: 5, default: 1 }
+  stamina:       { label: Stamina,      min: 1, max: 5, default: 1 }
+  presence:      { label: Presence,     min: 1, max: 5, default: 1 }
+  manipulation:  { label: Manipulation, min: 1, max: 5, default: 1 }
+  composure:     { label: Composure,    min: 1, max: 5, default: 1 }
+
+skills:
+  academics:     { label: Academics,    attribute: intelligence }
+  computer:      { label: Computer,     attribute: intelligence }
+  investigation: { label: Investigation, attribute: wits }
+  medicine:      { label: Medicine,     attribute: intelligence }
+  occult:        { label: Occult,       attribute: intelligence }
+  athletics:     { label: Athletics,    attribute: dexterity }
+  brawl:         { label: Brawl,        attribute: strength }
+  stealth:       { label: Stealth,      attribute: dexterity }
+  weaponry:      { label: Weaponry,     attribute: strength }
+  empathy:       { label: Empathy,      attribute: wits }
+  expression:    { label: Expression,   attribute: presence }
+  intimidation:  { label: Intimidation, attribute: presence }
+  persuasion:    { label: Persuasion,   attribute: manipulation }
+  subterfuge:    { label: Subterfuge,   attribute: manipulation }
+
+character:
+  creation:
+    attribute_dots: { primary: 5, secondary: 4, tertiary: 3 }
+    skill_dots: { primary: 11, secondary: 7, tertiary: 4 }
+    merit_dots: 7
+  derived:
+    size:      { label: Size,      formula: "5" }
+    speed:     { label: Speed,     formula: "strength + dexterity + 5" }
+    defense:   { label: Defense,   formula: "min(wits, dexterity)" }
+    initiative: { label: Initiative, formula: "dexterity + composure" }
+    health:    { label: Health,    formula: "stamina + size" }
+    willpower: { label: Willpower, formula: "resolve + composure" }
+
+resources:
+  health:    { label: Health,    formula: "stamina + 5" }
+  willpower: { label: Willpower, formula: "resolve + composure" }
+  integrity: { label: Integrity, default: 7, min: 0, max: 10 }
+
+traits:
+  iron_stamina:
+    label: Iron Stamina
+    polarity: positive
+    category: physical
+    description: Reduce wound penalties. 1-3 dot merit.
+    effects:
+      - { type: bonus, target: wound_penalty, value: -1 }
+  contacts:
+    label: Contacts
+    polarity: positive
+    category: social
+    description: Have reliable information sources in a field.
+  addiction:
+    label: Addiction
+    polarity: negative
+    category: mental
+    severity: minor
+    description: Compelled to seek a substance or behavior.
+  notoriety:
+    label: Notoriety
+    polarity: negative
+    category: social
+    severity: major
+    description: -2 to Social rolls with those aware of your reputation.
+    effects:
+      - { type: penalty, target: social, value: -2 }

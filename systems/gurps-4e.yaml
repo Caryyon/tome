@@ -1,0 +1,71 @@
+meta:
+  id: gurps-4e
+  name: GURPS 4th Edition
+  publisher: Steve Jackson Games
+  version: "4e"
+  engine: gurps
+  tags: [universal, point-buy, realistic]
+
+terminology:
+  attributes: Attributes
+  skills: Skills
+  positive_traits: Advantages
+  negative_traits: Disadvantages
+  neutral_traits: Quirks
+  traits: Advantages & Disadvantages
+  character_points: Character Points
+
+mechanics:
+  dice: [6]
+  roll_type: pool
+  roll_under: true
+  success_target: skill_value
+  critical_success: 4
+  critical_failure: 17
+
+attributes:
+  strength:     { label: Strength,     min: 1, max: 20, default: 10, cost_per_level: 10 }
+  dexterity:    { label: Dexterity,    min: 1, max: 20, default: 10, cost_per_level: 20 }
+  intelligence: { label: Intelligence, min: 1, max: 20, default: 10, cost_per_level: 20 }
+  health:       { label: Health,       min: 1, max: 20, default: 10, cost_per_level: 10 }
+
+character:
+  creation:
+    starting_points: 100
+  derived:
+    will:        { label: Will,        formula: "intelligence" }
+    perception:  { label: Perception,  formula: "intelligence" }
+    basic_speed: { label: Basic Speed, formula: "(dexterity + health) / 4" }
+    basic_move:  { label: Basic Move,  formula: "floor(basic_speed)" }
+
+resources:
+  hit_points:     { label: Hit Points,     formula: "strength" }
+  fatigue_points: { label: Fatigue Points, formula: "health" }
+
+traits:
+  combat_reflexes:
+    label: Combat Reflexes
+    polarity: positive
+    category: combat
+    description: +1 to all active defense rolls, +2 to Fast-Draw, never freeze in combat.
+    cost: 15
+  ambidexterity:
+    label: Ambidexterity
+    polarity: positive
+    category: physical
+    description: No off-hand penalty.
+    cost: 5
+  bad_temper:
+    label: Bad Temper
+    polarity: negative
+    category: mental
+    severity: minor
+    description: Self-control roll or lose temper in provocative situations.
+    cost: -10
+  cowardice:
+    label: Cowardice
+    polarity: negative
+    category: mental
+    severity: major
+    description: Self-control roll or avoid danger.
+    cost: -10

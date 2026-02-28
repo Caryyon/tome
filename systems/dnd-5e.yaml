@@ -1,0 +1,96 @@
+meta:
+  id: dnd-5e
+  name: Dungeons & Dragons 5th Edition
+  publisher: Wizards of the Coast
+  version: "2014"
+  engine: d20
+  tags: [fantasy, d20, classic]
+
+terminology:
+  attributes: Ability Scores
+  skills: Skills
+  positive_traits: Feats
+  negative_traits: Flaws
+  neutral_traits: Backgrounds
+  traits: Feats & Flaws
+  character_points: XP
+
+mechanics:
+  dice: [4, 6, 8, 10, 12, 20, 100]
+  roll_type: single
+  target: difficulty_class
+  proficiency_bonus: true
+
+attributes:
+  strength:     { label: Strength,     min: 1, max: 20, default: 10 }
+  dexterity:    { label: Dexterity,    min: 1, max: 20, default: 10 }
+  constitution: { label: Constitution, min: 1, max: 20, default: 10 }
+  intelligence: { label: Intelligence, min: 1, max: 20, default: 10 }
+  wisdom:       { label: Wisdom,       min: 1, max: 20, default: 10 }
+  charisma:     { label: Charisma,     min: 1, max: 20, default: 10 }
+
+skills:
+  acrobatics:      { label: Acrobatics,      attribute: dexterity }
+  arcana:          { label: Arcana,          attribute: intelligence }
+  athletics:       { label: Athletics,       attribute: strength }
+  deception:       { label: Deception,       attribute: charisma }
+  history:         { label: History,         attribute: intelligence }
+  insight:         { label: Insight,         attribute: wisdom }
+  intimidation:    { label: Intimidation,    attribute: charisma }
+  investigation:   { label: Investigation,   attribute: intelligence }
+  medicine:        { label: Medicine,        attribute: wisdom }
+  nature:          { label: Nature,          attribute: intelligence }
+  perception:      { label: Perception,      attribute: wisdom }
+  performance:     { label: Performance,     attribute: charisma }
+  persuasion:      { label: Persuasion,      attribute: charisma }
+  religion:        { label: Religion,        attribute: intelligence }
+  sleight_of_hand: { label: Sleight of Hand, attribute: dexterity }
+  stealth:         { label: Stealth,         attribute: dexterity }
+  survival:        { label: Survival,        attribute: wisdom }
+
+character:
+  creation:
+    standard_array: [15, 14, 13, 12, 10, 8]
+    point_buy_total: 27
+    starting_level: 1
+  derived:
+    proficiency_bonus:  { label: Proficiency Bonus,  formula: "ceil(level / 4) + 1" }
+    initiative:         { label: Initiative,         formula: "dexterity_modifier" }
+    passive_perception: { label: Passive Perception, formula: "10 + perception" }
+
+resources:
+  hit_points:  { label: Hit Points,  formula: "hit_die + constitution_modifier" }
+  hit_dice:    { label: Hit Dice,    formula: "level" }
+  spell_slots: { label: Spell Slots }
+  inspiration: { label: Inspiration, min: 0, max: 1 }
+
+traits:
+  alert:
+    label: Alert
+    polarity: positive
+    category: general
+    description: +5 to initiative, can't be surprised while conscious.
+    effects:
+      - { type: bonus, target: initiative, value: 5 }
+  lucky:
+    label: Lucky
+    polarity: positive
+    category: general
+    description: Gain 3 luck points per long rest. Spend to reroll.
+  tough:
+    label: Tough
+    polarity: positive
+    category: general
+    description: HP maximum increases by 2 per level.
+    effects:
+      - { type: bonus, target: hit_points, value: "2 * level" }
+  cowardly:
+    label: Cowardly
+    polarity: negative
+    category: flaw
+    description: Disadvantage on saving throws against being frightened.
+  greedy:
+    label: Greedy
+    polarity: negative
+    category: flaw
+    description: Compelled to take risks for monetary gain.

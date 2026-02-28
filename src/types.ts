@@ -450,6 +450,22 @@ export interface GameSystem {
     [id: string]: SystemTrait;
   };
 
+  /**
+   * System-specific display terminology. Maps Tome generic keys to the labels
+   * this system uses on character sheets and in rulebooks.
+   */
+  terminology?: {
+    attributes?: string;
+    skills?: string;
+    traits?: string;
+    positive_traits?: string;
+    negative_traits?: string;
+    neutral_traits?: string;
+    resources?: string;
+    character_points?: string;
+    [key: string]: string | undefined;
+  };
+
   /** Anything system-specific that does not fit the schema above */
   extensions?: Record<string, unknown>;
 }

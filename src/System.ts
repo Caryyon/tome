@@ -133,6 +133,32 @@ export class System {
   }
 
   // ---------------------------------------------------------------------------
+  // Terminology
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Returns the system-specific display label for a generic Tome vocabulary key.
+   * Falls back to built-in defaults, then to the key itself.
+   *
+   * Example: swade.getTerm('positive_traits') => 'Edges'
+   *          dnd5e.getTerm('positive_traits') => 'Feats'
+   */
+  getTerm(key: keyof NonNullable<import('./types').GameSystem['terminology']>): string {
+    return (this.data.terminology?.[key as string]) ?? this.defaultTerms[key as string] ?? (key as string);
+  }
+
+  private defaultTerms: Record<string, string> = {
+    attributes: 'Attributes',
+    skills: 'Skills',
+    traits: 'Traits',
+    positive_traits: 'Advantages',
+    negative_traits: 'Disadvantages',
+    neutral_traits: 'Traits',
+    resources: 'Resources',
+    character_points: 'XP',
+  };
+
+  // ---------------------------------------------------------------------------
   // Serialization
   // ---------------------------------------------------------------------------
 

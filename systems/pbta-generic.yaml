@@ -1,0 +1,55 @@
+meta:
+  id: pbta-generic
+  name: Powered by the Apocalypse (Generic)
+  engine: pbta
+  tags: [narrative, fiction-first, universal]
+
+terminology:
+  attributes: Stats
+  skills: Moves
+  positive_traits: Moves
+  neutral_traits: Moves
+  traits: Moves
+  character_points: XP
+
+mechanics:
+  dice: [6]
+  roll_type: pool
+  pool_size: 2
+  success_threshold: 10
+  partial_threshold: 7
+  failure_threshold: 6
+
+attributes:
+  cool:  { label: Cool,  min: -1, max: 3, default: 0 }
+  hard:  { label: Hard,  min: -1, max: 3, default: 0 }
+  hot:   { label: Hot,   min: -1, max: 3, default: 0 }
+  sharp: { label: Sharp, min: -1, max: 3, default: 0 }
+  weird: { label: Weird, min: -1, max: 3, default: 0 }
+
+character:
+  creation:
+    highlight_stats: 2
+  derived: {}
+
+resources:
+  harm:       { label: Harm, min: 0, max: 6 }
+  hold:       { label: Hold, min: 0 }
+  experience: { label: XP,   min: 0, max: 5 }
+
+traits:
+  go_aggro:
+    label: Go Aggro
+    polarity: neutral
+    category: basic_move
+    description: When you go aggro on someone, roll+Hard.
+  seize_by_force:
+    label: Seize by Force
+    polarity: neutral
+    category: basic_move
+    description: When you seize something by force or defend, roll+Hard.
+  read_a_person:
+    label: Read a Person
+    polarity: neutral
+    category: basic_move
+    description: When you read a person in a charged situation, roll+Sharp.

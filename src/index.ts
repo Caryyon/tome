@@ -61,7 +61,6 @@ export { System } from './System';
 export type {
   GameSystem,
   SystemTrait,
-
   TraitRequirement,
   TraitEffect,
 } from './types';

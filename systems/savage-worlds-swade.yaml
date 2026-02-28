@@ -6,6 +6,14 @@ meta:
   engine: savage-worlds
   tags: [fantasy, sci-fi, horror, universal]
 
+terminology:
+  attributes: Traits
+  skills: Skills
+  positive_traits: Edges
+  negative_traits: Hindrances
+  traits: Edges & Hindrances
+  character_points: Advances
+
 mechanics:
   dice: [4, 6, 8, 10, 12]
   roll_type: step

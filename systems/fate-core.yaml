@@ -1,0 +1,94 @@
+meta:
+  id: fate-core
+  name: Fate Core
+  publisher: Evil Hat Productions
+  version: "core"
+  engine: fate
+  tags: [narrative, universal, cinematic]
+
+terminology:
+  attributes: Approaches
+  skills: Skills
+  positive_traits: Stunts
+  negative_traits: Consequences
+  neutral_traits: Aspects
+  traits: Aspects & Stunts
+  character_points: Fate Points
+  resources: Stress
+
+mechanics:
+  dice: [6]
+  roll_type: fate
+  fate_dice: true
+  ladder: [-2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+  ladder_labels:
+    - Terrible
+    - Poor
+    - Mediocre
+    - Average
+    - Fair
+    - Good
+    - Great
+    - Superb
+    - Fantastic
+    - Epic
+    - Legendary
+
+skills:
+  athletics:   { label: Athletics,   min: 0, max: 4 }
+  burglary:    { label: Burglary,    min: 0, max: 4 }
+  contacts:    { label: Contacts,    min: 0, max: 4 }
+  crafts:      { label: Crafts,      min: 0, max: 4 }
+  deceive:     { label: Deceive,     min: 0, max: 4 }
+  drive:       { label: Drive,       min: 0, max: 4 }
+  empathy:     { label: Empathy,     min: 0, max: 4 }
+  fight:       { label: Fight,       min: 0, max: 4 }
+  investigate: { label: Investigate, min: 0, max: 4 }
+  lore:        { label: Lore,        min: 0, max: 4 }
+  notice:      { label: Notice,      min: 0, max: 4 }
+  physique:    { label: Physique,    min: 0, max: 4 }
+  provoke:     { label: Provoke,     min: 0, max: 4 }
+  rapport:     { label: Rapport,     min: 0, max: 4 }
+  resources:   { label: Resources,   min: 0, max: 4 }
+  shoot:       { label: Shoot,       min: 0, max: 4 }
+  stealth:     { label: Stealth,     min: 0, max: 4 }
+  will:        { label: Will,        min: 0, max: 4 }
+
+character:
+  creation:
+    skill_points: 20
+    refresh: 3
+    free_stunts: 3
+    stunt_cost: 1
+  derived: {}
+
+resources:
+  fate_points:     { label: Fate Points,    default: 3 }
+  physical_stress: { label: Physical Stress, default: 2 }
+  mental_stress:   { label: Mental Stress,   default: 2 }
+
+traits:
+  high_concept:
+    label: High Concept
+    polarity: neutral
+    category: aspect
+    description: The defining statement of who you are.
+  trouble:
+    label: Trouble
+    polarity: negative
+    category: aspect
+    description: The thing that makes your life complicated.
+  always_prepared:
+    label: Always Prepared
+    polarity: positive
+    category: stunt
+    description: Spend a fate point to have useful mundane equipment on hand.
+  danger_sense:
+    label: Danger Sense
+    polarity: positive
+    category: stunt
+    requirements:
+      - { type: skill, id: notice, min_rank: 2 }
+    description: +2 to Notice rolls to avoid being ambushed.
+    effects:
+      - { type: bonus, target: notice, value: 2 }
