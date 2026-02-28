@@ -1,522 +1,206 @@
-# 📚 Tome - Tabletop Open Markup for Entities
+# Tome
 
-**Universal, open-source data format for tabletop RPG entities**
+**Tabletop Open Markup for Entities** -- a universal RPG entity format.
 
-Tome is a system-agnostic format for representing any RPG entity (characters, items, locations, vehicles, NPCs, creatures, abilities) that works across any game system without vendor lock-in.
+Think of it like `package.json` but for tabletop RPG data. Tome gives you a
+consistent, portable way to represent characters, NPCs, items, locations, and
+other game entities across any game system.
 
-## Why Tome?
+---
 
-- **Universal** - Works with D&D, Pathfinder, GURPS, Cyberpunk, homebrew, or any RPG system
-- **Semantic** - Uses clear terminology (properties, capabilities, resources) instead of system-specific jargon
-- **Git-friendly** - Clean JSON format with meaningful diffs
-- **Extensible** - Use only what you need, extend anything
-- **Open** - MIT licensed, community-driven, no vendor lock-in
-- **Entity-based** - Not just characters - items, locations, vehicles, anything
+## Two-Layer Architecture
+
+Tome separates **rules** from **data**.
+
+```
+Systems  (the rules)   -- what attributes exist, valid die values, edges, etc.
+Entities (the data)    -- actual character or item values, keyed to a system
+```
+
+A **System** file defines the schema for a game system: its attributes, skills,
+edges, hindrances, derived stat formulas, resource pools, and character creation
+rules. An **Entity** file holds the actual values for a specific character or
+item, and references the System it belongs to via `meta.system`.
+
+This means you can validate a Savage Worlds character against the SWADE rules,
+or a Titan Effect Zero character against its system, using the same library.
+
+---
 
 ## Quick Start
 
-### Using the Web Editor
+### Install
 
-1. Open `editor/index.html` in your browser
-2. Fill in your entity details
-3. Click "Save .tome" to download
-4. Load existing .tome files with "Load .tome"
+```bash
+npm install tome
+# or
+yarn add tome
+```
 
-### Using the Library
+### Creating an entity
 
 ```typescript
 import { Entity, EntityType } from 'tome';
 
-// Create a new entity
-const hero = new Entity('Alaric the Brave', EntityType.Character, {
-  system: 'Custom Fantasy',
-  description: 'A wandering knight',
-  tags: ['warrior', 'noble', 'human'],
+const character = new Entity('Mira Voss', EntityType.Character, {
+  system: 'savage-worlds-swade',
+  tags: ['player-character'],
 });
 
-// Add properties
-hero.addStaticProperty('might', 18);
-hero.addStaticProperty('agility', 14);
-hero.addDynamicProperty('morale', 85);
+character
+  .addStaticProperty('agility', 8)   // d8 in SWADE
+  .addStaticProperty('fighting', 6)  // d6 Fighting skill
+  .addResource('wounds', { current: 0, maximum: 3, minimum: 0 })
+  .addResource('bennies', { current: 3, minimum: 0 });
 
-// Add resources
-hero.addResource('vitality', {
-  current: 45,
-  maximum: 50,
-});
+console.log(character.toJSON());
+```
 
-// Add capabilities
-hero.addAction({
-  id: 'power-strike',
-  name: 'Power Strike',
-  description: 'A devastating melee attack',
-  costs: { stamina: 10 },
-});
+### Loading a game system
 
-// Validate and export
-const validation = hero.validate();
-if (validation.valid) {
-  const json = hero.toJSON();
-  console.log(json);
+```typescript
+import { System } from 'tome';
+import { readFileSync } from 'fs';
+
+const yaml = readFileSync('systems/savage-worlds-swade.yaml', 'utf-8');
+const swade = System.fromYAML(yaml, 'savage-worlds-swade');
+
+console.log(swade.name);          // "Savage Worlds Adventure Edition"
+console.log(swade.getValidDice()); // [4, 6, 8, 10, 12]
+console.log(swade.getAttribute('agility')); // { label: 'Agility', die: 6 }
+```
+
+### System-aware validation
+
+```typescript
+const result = character.validateWithSystem(swade);
+
+if (!result.valid) {
+  result.errors.forEach(e => console.error(e.path, e.message));
+}
+if (result.warnings) {
+  result.warnings.forEach(w => console.warn(w.path, w.message));
 }
 ```
-
-## File Formats
-
-### .tome - Single Entity (JSON)
-
-A standalone JSON file containing one entity:
-
-```json
-{
-  "tome": {
-    "version": "1.0.0",
-    "format": "entity"
-  },
-  "meta": {
-    "id": "uuid-here",
-    "type": "character",
-    "created": "2025-01-15T12:00:00.000Z",
-    "modified": "2025-01-15T12:00:00.000Z",
-    "tags": ["warrior", "human"]
-  },
-  "identity": {
-    "name": {
-      "primary": "Alaric the Brave"
-    },
-    "description": {
-      "short": "A wandering knight"
-    }
-  },
-  "properties": {
-    "static": {
-      "might": 18,
-      "agility": 14
-    }
-  },
-  "resources": {
-    "vitality": {
-      "current": 45,
-      "maximum": 50
-    }
-  }
-}
-```
-
-### .tomes - Container (ZIP)
-
-A ZIP file containing multiple entities plus media:
-
-```
-campaign.tomes/
-├── manifest.json          # Container metadata
-├── entities/
-│   ├── hero-001.json
-│   ├── villain-001.json
-│   └── sword-of-power.json
-└── media/
-    ├── hero-portrait.png
-    └── sword-icon.png
-```
-
-### .tomex - Exchange Format (Future)
-
-Signed/encrypted format for secure trading and distribution.
-
-## Core Concepts
-
-### System-Agnostic Design
-
-Tome doesn't use game-specific terminology. Instead of "hit points" or "armor class", it uses:
-
-- **Properties** - Characteristics (might, speed, size, etc.)
-- **Capabilities** - Actions, reactions, passive abilities
-- **Resources** - Pools like health, energy, ammunition
-- **Classification** - Role, species, rank (your terms, not ours)
-
-### Flexible Values
-
-Values can be numbers, strings, or formulas:
-
-```json
-{
-  "properties": {
-    "static": {
-      "might": 18,
-      "height": "6'2\"",
-      "reputation": "excellent",
-      "damage": "2d6+4"
-    }
-  }
-}
-```
-
-### Progressive Disclosure
-
-Start simple, add complexity as needed:
-
-```typescript
-// Minimal entity
-const item = new Entity('Magic Sword', EntityType.Item);
-
-// Add more detail over time
-item.addStaticProperty('damage', '1d8+2');
-item.addAction({
-  id: 'flame-burst',
-  name: 'Flame Burst',
-  description: 'Release a burst of flame',
-});
-```
-
-## Schema Structure
-
-### Required Fields
-
-Only these fields are required:
-
-```json
-{
-  "tome": {
-    "version": "1.0.0",
-    "format": "entity"
-  },
-  "meta": {
-    "id": "unique-id",
-    "type": "character"
-  },
-  "identity": {
-    "name": {
-      "primary": "Entity Name"
-    }
-  }
-}
-```
-
-### Full Structure
-
-```json
-{
-  "tome": {
-    "version": "1.0.0",
-    "format": "entity"
-  },
-  "meta": {
-    "id": "uuid",
-    "type": "character|item|location|vehicle|npc|creature|ability",
-    "created": "ISO-8601 date",
-    "modified": "ISO-8601 date",
-    "tags": ["tag1", "tag2"],
-    "system": "D&D 5e"
-  },
-  "identity": {
-    "name": {
-      "primary": "Name",
-      "alternate": ["Alias"],
-      "pronunciation": "How to say it"
-    },
-    "classification": {
-      "race": "Elf",
-      "class": "Wizard",
-      "level": 5
-    },
-    "description": {
-      "short": "One-liner",
-      "full": "Detailed description",
-      "appearance": "What they look like"
-    }
-  },
-  "properties": {
-    "static": {
-      "might": 18
-    },
-    "dynamic": {
-      "morale": 85
-    },
-    "computed": {
-      "carryCapacity": 180
-    }
-  },
-  "capabilities": {
-    "actions": [
-      {
-        "id": "fireball",
-        "name": "Fireball",
-        "description": "Hurl a ball of fire",
-        "costs": { "mana": 15 }
-      }
-    ],
-    "reactions": [],
-    "passive": []
-  },
-  "resources": {
-    "health": {
-      "current": 45,
-      "maximum": 50
-    }
-  },
-  "inventory": {
-    "items": [
-      {
-        "id": "sword-001",
-        "name": "Iron Sword",
-        "quantity": 1,
-        "equipped": true
-      }
-    ]
-  },
-  "narrative": {
-    "background": "Once upon a time...",
-    "personality": "Brave and loyal"
-  },
-  "extensions": {
-    "dnd5e": {
-      "proficiencyBonus": 3
-    }
-  }
-}
-```
-
-## Examples
-
-### Fantasy RPG Character
-
-```typescript
-const wizard = new Entity('Gandalf', EntityType.Character, {
-  system: 'Fantasy',
-  tags: ['wizard', 'magic', 'wise'],
-});
-
-wizard.setClassification({
-  species: 'Maiar',
-  order: 'Istari',
-  power: 'legendary',
-});
-
-wizard.addStaticProperty('intellect', 20);
-wizard.addStaticProperty('wisdom', 22);
-
-wizard.addResource('magicPower', {
-  current: 100,
-  maximum: 100,
-  regeneration: { rate: 10, interval: 'hour' },
-});
-
-wizard.addAction({
-  id: 'cast-spell',
-  name: 'Cast Spell',
-  description: 'Channel arcane energy',
-  costs: { magicPower: 15 },
-});
-```
-
-### Sci-Fi Starship
-
-```typescript
-const ship = new Entity('USS Enterprise', EntityType.Vehicle, {
-  system: 'Star Trek',
-  tags: ['starship', 'federation', 'exploration'],
-});
-
-ship.setClassification({
-  class: 'Constitution',
-  registry: 'NCC-1701',
-  crew: 430,
-});
-
-ship.addStaticProperty('warpSpeed', '9.5');
-ship.addStaticProperty('weapons', 'phasers, photon torpedoes');
-
-ship.addResource('shields', {
-  current: 100,
-  maximum: 100,
-  type: 'pool',
-});
-
-ship.addAction({
-  id: 'warp-jump',
-  name: 'Warp Jump',
-  description: 'Engage warp drive to another system',
-  costs: { antimatter: 50 },
-});
-```
-
-### Simple Item
-
-```typescript
-const sword = new Entity('Excalibur', EntityType.Item, {
-  system: 'Arthurian Legend',
-  tags: ['weapon', 'legendary', 'sword'],
-});
-
-sword.addStaticProperty('damage', 'legendary');
-sword.addStaticProperty('weight', '10 lbs');
-
-sword.addPassive({
-  id: 'rightful-king',
-  name: 'Blade of the Rightful King',
-  description: 'Cannot be wielded by the unworthy',
-});
-```
-
-## Converting From Other Formats
-
-See `converters/` for example converters:
-
-```typescript
-import { dnd5eToTome, tomeToD nd5e } from './converters/dnd5e-to-tome';
-
-// Convert D&D character to Tome
-const dndCharacter = { /* D&D data */ };
-const tomeEntity = dnd5eToTome(dndCharacter);
-
-// Convert back
-const reconstructed = tomeToD nd5e(tomeEntity);
-```
-
-## Display Formats
-
-Convert Tome to various display formats:
-
-```typescript
-import { tomeToText, tomeToHTML, tomeToMarkdown } from './converters/tome-to-display';
-
-const entity = new Entity('Hero', EntityType.Character);
-// ... populate entity
-
-// Plain text
-console.log(tomeToText(entity.getData()));
-
-// HTML
-document.body.innerHTML = tomeToHTML(entity.getData());
-
-// Markdown
-const markdown = tomeToMarkdown(entity.getData());
-```
-
-## API Reference
-
-### Entity Class
-
-```typescript
-// Create entity
-const entity = new Entity(name: string, type: EntityType, options?);
-
-// Static methods
-Entity.fromData(data: TomeEntity): Entity
-Entity.fromJSON(json: string): Entity
-
-// Methods
-entity.setName(name: string): this
-entity.setClassification(classification: Record<string, any>): this
-entity.setDescription(description: {...}): this
-entity.addStaticProperty(key: string, value: any): this
-entity.addDynamicProperty(key: string, value: any): this
-entity.addComputedProperty(key: string, value: any): this
-entity.addAction(action: Capability): this
-entity.addReaction(reaction: Capability): this
-entity.addPassive(passive: Capability): this
-entity.addResource(key: string, resource: Resource): this
-entity.addInventoryItem(item: InventoryItem): this
-entity.addTag(tag: string): this
-entity.validate(): ValidationResult
-entity.toJSON(options?: ExportOptions): string
-entity.clone(): Entity
-```
-
-### Container Class
-
-```typescript
-// Create container
-const container = new Container(name: string, options?);
-
-// Static methods
-Container.fromData(data: TomeContainer, mediaFiles?): Container
-Container.fromZip(arrayBuffer: ArrayBuffer): Promise<Container>
-
-// Methods
-container.addEntity(entity: Entity | TomeEntity): this
-container.removeEntity(entityId: string): this
-container.getEntities(): TomeEntity[]
-container.getEntity(entityId: string): TomeEntity | undefined
-container.addMedia(media: MediaFile): this
-container.removeMedia(mediaId: string): this
-container.validate(): ValidationResult
-container.toZip(): Promise<Blob>
-container.toJSON(options?: ExportOptions): string
-```
-
-## Development
-
-### Build
-
-```bash
-yarn install
-yarn build
-```
-
-### Run Editor Locally
-
-```bash
-# Open editor/index.html in your browser
-# No build step required - it's standalone!
-```
-
-## Design Principles
-
-1. **Minimal Required Fields** - Only tome, meta.id, meta.type, and identity.name are required
-2. **Flexible Values** - Accept numbers, strings, formulas ("18", "d20", "excellent")
-3. **No System Assumptions** - Don't assume combat, magic, levels, or any specific mechanics
-4. **Human Readable** - Should make sense when read as JSON
-5. **Progressive Disclosure** - Start simple, add complexity as needed
-6. **Git Friendly** - Clean diffs, no binary formats (except .tomes ZIP)
-7. **Zero Vendor Lock-in** - Open format, open source, community-owned
-
-## Use Cases
-
-- **Character Management** - Store characters across different campaigns and systems
-- **Content Creation** - Create NPCs, items, and locations for your game
-- **Campaign Tools** - Build campaign management tools with standard format
-- **Converters** - Build tools to convert between different RPG systems
-- **Archives** - Preserve game content in an open, long-term format
-- **Sharing** - Share entities with other players and GMs
-- **Integration** - Integrate with virtual tabletops, character builders, etc.
-
-## Contributing
-
-Tome is a community project! Contributions welcome:
-
-- Submit issues and feature requests
-- Create converters for your favorite RPG system
-- Improve documentation
-- Build tools that use Tome format
-
-## License
-
-MIT License - Use freely in commercial and personal projects
-
-## FAQ
-
-**Q: Does Tome support [specific game system]?**
-A: Tome supports ALL game systems by design. It's system-agnostic.
-
-**Q: Why not just use JSON?**
-A: Tome IS JSON, but with a standardized schema that tools can understand.
-
-**Q: Can I add custom fields?**
-A: Yes! Use the `extensions` section for system-specific data.
-
-**Q: How do I convert my D&D character?**
-A: See `converters/dnd5e-to-tome.ts` for an example converter.
-
-**Q: Is this compatible with [virtual tabletop]?**
-A: Build a converter! The format is designed to be convertible.
-
-**Q: What about images and media?**
-A: Use .tomes (ZIP) format to bundle entities with images.
-
-**Q: Can I use this commercially?**
-A: Yes! MIT license allows commercial use.
 
 ---
 
-**Tome** - Because your characters deserve better than vendor lock-in.
+## File Formats
+
+### Entity file (`.tome.json`)
+
+```json
+{
+  "tome": { "version": "1.0.0", "format": "entity" },
+  "meta": {
+    "id": "uuid-here",
+    "type": "character",
+    "system": "savage-worlds-swade"
+  },
+  "identity": {
+    "name": { "primary": "Mira Voss" }
+  },
+  "properties": {
+    "static": { "agility": 8, "fighting": 6 }
+  },
+  "resources": {
+    "wounds":  { "current": 0, "maximum": 3, "minimum": 0 },
+    "bennies": { "current": 3, "minimum": 0 }
+  }
+}
+```
+
+### System file (`.system.yaml`)
+
+```yaml
+tome:
+  version: "1.0.0"
+  format: system
+
+meta:
+  id: savage-worlds-swade
+  name: Savage Worlds Adventure Edition
+  engine: savage-worlds
+
+mechanics:
+  dice: [4, 6, 8, 10, 12]
+  roll_type: step
+
+attributes:
+  agility: { label: Agility, die: 6 }
+  vigor:   { label: Vigor,   die: 6 }
+
+skills:
+  fighting: { label: Fighting, attribute: agility }
+```
+
+---
+
+## Bundled Systems
+
+| File | System | Engine |
+|------|--------|--------|
+| `systems/savage-worlds-swade.yaml` | Savage Worlds Adventure Edition | savage-worlds |
+| `systems/year-zero-engine-base.yaml` | Year Zero Engine | year-zero-engine |
+| `systems/titan-effect-zero.yaml` | Titan Effect Zero | year-zero-engine |
+
+---
+
+## Converters
+
+Two converters are included for importing character data from other tools:
+
+- **`converters/savaged-to-tome.ts`** -- converts a `savaged-core` PlayerCharacter
+  export to a Tome entity referencing `savage-worlds-swade`
+- **`converters/yzh-to-tome.ts`** -- converts a Year Zero Hero (YZH) character
+  JSON export to a Tome entity referencing `titan-effect-zero`
+
+```typescript
+import { savegedToTome } from 'tome/converters/savaged-to-tome';
+import { yzhToTome }     from 'tome/converters/yzh-to-tome';
+```
+
+---
+
+## API
+
+### `Entity`
+
+| Method | Description |
+|--------|-------------|
+| `new Entity(name, type, opts?)` | Create a new entity |
+| `Entity.fromJSON(json)` | Load from JSON string |
+| `Entity.fromData(data)` | Load from TomeEntity object |
+| `.addStaticProperty(key, value)` | Set a static (base) property |
+| `.addDynamicProperty(key, value)` | Set a dynamic (current) property |
+| `.addComputedProperty(key, value)` | Set a computed/derived property |
+| `.addResource(key, resource)` | Add a resource pool |
+| `.addPassive(capability)` | Add a passive capability (edge, trait) |
+| `.validate()` | Validate against the Tome schema |
+| `.validateWithSystem(system)` | Validate against schema + game system |
+| `.toJSON(opts?)` | Export to JSON string |
+| `.clone()` | Clone with a new ID |
+
+### `System`
+
+| Method | Description |
+|--------|-------------|
+| `System.fromYAML(yaml, id)` | Load from YAML string |
+| `System.fromJSON(json)` | Load from JSON string |
+| `System.fromData(data)` | Load from GameSystem object |
+| `.id` | System id |
+| `.name` | System name |
+| `.getAttribute(id)` | Look up an attribute definition |
+| `.getSkill(id)` | Look up a skill definition |
+| `.getEdge(id)` | Look up an edge definition |
+| `.getHindrance(id)` | Look up a hindrance definition |
+| `.getValidDice()` | List of valid die sizes |
+| `.isStepSystem()` | True for step-die systems (Savage Worlds) |
+| `.isPoolSystem()` | True for dice-pool systems (YZE) |
+| `.toJSON()` | Serialize to JSON string |
+
+---
+
+## License
+
+MIT

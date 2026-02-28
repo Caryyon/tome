@@ -1,0 +1,43 @@
+meta:
+  id: titan-effect-zero
+  name: Titan Effect Zero
+  publisher: Knight Errant Media
+  engine: year-zero-engine
+  # System inheritance is not yet implemented. The parent field is reserved
+  # for a future feature where this system would automatically inherit all
+  # definitions from year-zero-engine-base and only override what differs.
+  parent: year-zero-engine-base
+  tags: [sci-fi, cyberpunk]
+
+mechanics:
+  dice: [6]
+  roll_type: pool
+  push_rolls: true
+  success_target: 6
+
+# Attributes mirror YZE base but cap at 4 instead of 5
+attributes:
+  strength: { label: Strength, min: 1, max: 4, default: 2 }
+  agility:  { label: Agility,  min: 1, max: 4, default: 2 }
+  wits:     { label: Wits,     min: 1, max: 4, default: 2 }
+  empathy:  { label: Empathy,  min: 1, max: 4, default: 2 }
+
+skills:
+  hand_to_hand_combat: { label: Hand-to-Hand Combat, attribute: agility,  max: 4 }
+  marksmanship:        { label: Marksmanship,         attribute: agility,  max: 4 }
+  endurance:           { label: Endurance,             attribute: strength, max: 4 }
+  stealth:             { label: Stealth,               attribute: agility,  max: 4 }
+  tech:                { label: Tech,                  attribute: wits,     max: 4 }
+  investigation:       { label: Investigation,         attribute: wits,     max: 4 }
+  manipulation:        { label: Manipulation,          attribute: empathy,  max: 4 }
+  healing:             { label: Healing,               attribute: empathy,  max: 4 }
+
+character:
+  creation:
+    attribute_points: 14
+    max_per_attribute: 4
+    skill_points: 10
+
+resources:
+  hit_points: { label: Hit Points, formula: "strength * 2 + 10" }
+  stress:     { label: Stress,     min: 0, max: 10 }

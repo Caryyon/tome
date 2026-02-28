@@ -1,0 +1,33 @@
+meta:
+  id: year-zero-engine-base
+  name: Year Zero Engine
+  publisher: Free League Publishing
+  engine: year-zero-engine
+  tags: [post-apocalyptic, horror, sci-fi, fantasy]
+
+mechanics:
+  dice: [6]
+  roll_type: pool
+  push_rolls: true
+  success_target: 6
+
+attributes:
+  strength: { label: Strength, min: 1, max: 5, default: 2 }
+  agility:  { label: Agility,  min: 1, max: 5, default: 2 }
+  wits:     { label: Wits,     min: 1, max: 5, default: 2 }
+  empathy:  { label: Empathy,  min: 1, max: 5, default: 2 }
+
+character:
+  creation:
+    attribute_points: 14
+    max_per_attribute: 4
+    skill_points: 10
+  derived:
+    hit_points:    { label: Hit Points,    formula: "strength + 4" }
+    mind_points:   { label: Mind Points,   formula: "wits + 4" }
+    empathy_points: { label: Empathy Points, formula: "empathy + 4" }
+
+resources:
+  hit_points:  { label: Hit Points,  formula: "strength + 4" }
+  mind_points: { label: Mind Points, formula: "wits + 4" }
+  stress:      { label: Stress,      min: 0, max: 10 }

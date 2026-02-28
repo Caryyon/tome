@@ -55,3 +55,13 @@ export type { MediaFile } from './Container';
 // Version info
 export const VERSION = '1.0.0';
 export const LIBRARY_NAME = 'Tome';
+
+// System
+export { System } from './System';
+export type {
+  GameSystem,
+  SystemEdge,
+  SystemHindrance,
+  EdgeRequirement,
+  EdgeEffect,
+} from './types';

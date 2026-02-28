@@ -1,0 +1,87 @@
+meta:
+  id: savage-worlds-swade
+  name: Savage Worlds Adventure Edition
+  publisher: Pinnacle Entertainment Group
+  version: swade
+  engine: savage-worlds
+  tags: [fantasy, sci-fi, horror, universal]
+
+mechanics:
+  dice: [4, 6, 8, 10, 12]
+  roll_type: step
+  wild_die: 6
+
+attributes:
+  agility:  { label: Agility,   die: 6 }
+  smarts:   { label: Smarts,    die: 6 }
+  spirit:   { label: Spirit,    die: 6 }
+  strength: { label: Strength,  die: 6 }
+  vigor:    { label: Vigor,     die: 6 }
+
+skills:
+  athletics:        { label: Athletics,         attribute: agility }
+  common_knowledge: { label: Common Knowledge,  attribute: smarts }
+  fighting:         { label: Fighting,          attribute: agility }
+  notice:           { label: Notice,            attribute: smarts }
+  persuasion:       { label: Persuasion,        attribute: spirit }
+  shooting:         { label: Shooting,          attribute: agility }
+  stealth:          { label: Stealth,           attribute: agility }
+  survival:         { label: Survival,          attribute: smarts }
+
+character:
+  creation:
+    attribute_points: 5
+    skill_points: 15
+    starting_advances: 0
+    hindrance_points_minor: 1
+    hindrance_points_major: 2
+  derived:
+    pace:      { label: Pace,      formula: "6" }
+    parry:     { label: Parry,     formula: "2 + floor(fighting_die / 2)" }
+    toughness: { label: Toughness, formula: "2 + floor(vigor_die / 2)" }
+
+resources:
+  bennies: { label: Bennies, default: 3 }
+  wounds:  { label: Wounds,  min: 0, max: 3 }
+
+edges:
+  alertness:
+    label: Alertness
+    category: background
+    requirements:
+      - { type: skill, id: notice, min_die: 6 }
+    effects:
+      - { type: bonus, target: notice, value: 2 }
+    description: The character is unusually alert.
+  ambidextrous:
+    label: Ambidextrous
+    category: background
+    requirements:
+      - { type: attribute, id: agility, min_die: 8 }
+    description: Ignores off-hand penalty.
+  block:
+    label: Block
+    category: combat
+    requirements:
+      - { type: skill, id: fighting, min_die: 8 }
+    effects:
+      - { type: bonus, target: parry, value: 1 }
+    description: +1 Parry.
+
+hindrances:
+  all_thumbs:
+    label: All Thumbs
+    severity: minor
+    effects:
+      - { type: penalty, target: repair, value: -2 }
+    description: -2 to Repair rolls. On a Critical Failure uses tech, it breaks.
+  arrogant:
+    label: Arrogant
+    severity: major
+    description: Must challenge the most powerful foe.
+  bad_luck:
+    label: Bad Luck
+    severity: major
+    effects:
+      - { type: replace, target: bennies, value: 2 }
+    description: One fewer Benny per session.

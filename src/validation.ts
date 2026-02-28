@@ -335,3 +335,126 @@ export function generateId(): string {
 export function generateTimestamp(): string {
   return new Date().toISOString();
 }
+
+// ---------------------------------------------------------------------------
+// System-aware validation
+// ---------------------------------------------------------------------------
+
+// Import lazily to avoid circular dependency issues at module load time.
+// The System class imports from types.ts which is fine; this import is
+// conditional on whether the caller passes a System instance.
+import type { System } from './System';
+
+/**
+ * Validates a Tome entity against a loaded game system definition.
+ *
+ * Checks:
+ *  - Properties in properties.static/dynamic are recognized attributes or skills
+ *    in the system (warning if unknown).
+ *  - For step-die systems, die values must be in the system's valid dice list.
+ *  - Passive capabilities referencing edges are noted (no hard failure).
+ */
+export function validateEntityAgainstSystem(
+  entity: TomeEntity,
+  system: System,
+): ValidationResult {
+  const errors: ValidationError[] = [];
+  const warnings: ValidationWarning[] = [];
+
+  const systemData = system.getData();
+  const validDice = system.getValidDice();
+  const isStep = system.isStepSystem();
+
+  // Check that meta.system references the right system id
+  if (entity.meta.system && entity.meta.system !== system.id) {
+    warnings.push({
+      path: '$.meta.system',
+      message: `Entity declares system '${entity.meta.system}' but was validated against '${system.id}'`,
+    });
+  }
+
+  // Validate static properties against known attributes and skills
+  const staticProps = entity.properties?.static ?? {};
+  for (const [key, value] of Object.entries(staticProps)) {
+    const isAttribute = !!systemData.attributes?.[key];
+    const isSkill = !!systemData.skills?.[key];
+
+    if (!isAttribute && !isSkill) {
+      warnings.push({
+        path: `$.properties.static.${key}`,
+        message: `Property '${key}' is not a recognized attribute or skill in system '${system.id}'`,
+        code: 'UNKNOWN_PROPERTY',
+      });
+      continue;
+    }
+
+    // For step systems, numeric values should be valid die sizes
+    if (isStep && validDice.length > 0) {
+      const die = typeof value === 'object' && value !== null && 'value' in value
+        ? (value as { value: unknown }).value
+        : value;
+      if (typeof die === 'number' && !validDice.includes(die)) {
+        errors.push({
+          path: `$.properties.static.${key}`,
+          message: `Die value ${die} is not valid for system '${system.id}'. Valid dice: [${validDice.join(', ')}]`,
+          code: 'INVALID_DIE',
+        });
+      }
+    }
+
+    // For pool systems, numeric values should be within attribute/skill range
+    if (!isStep) {
+      const def = isAttribute ? systemData.attributes?.[key] : systemData.skills?.[key];
+      const raw = typeof value === 'object' && value !== null && 'value' in value
+        ? (value as { value: unknown }).value
+        : value;
+      if (typeof raw === 'number' && def) {
+        if (def.min !== undefined && raw < def.min) {
+          errors.push({
+            path: `$.properties.static.${key}`,
+            message: `Value ${raw} is below minimum ${def.min} for '${key}' in system '${system.id}'`,
+            code: 'BELOW_MINIMUM',
+          });
+        }
+        if (def.max !== undefined && raw > def.max) {
+          errors.push({
+            path: `$.properties.static.${key}`,
+            message: `Value ${raw} exceeds maximum ${def.max} for '${key}' in system '${system.id}'`,
+            code: 'ABOVE_MAXIMUM',
+          });
+        }
+      }
+    }
+  }
+
+  // Check passive capabilities that look like edge references
+  const passives = entity.capabilities?.passive ?? [];
+  for (const passive of passives) {
+    if (passive.metadata?.['system_type'] === 'edge' && passive.id) {
+      const edgeDef = system.getEdge(passive.id);
+      if (!edgeDef) {
+        warnings.push({
+          path: `$.capabilities.passive[id=${passive.id}]`,
+          message: `Edge '${passive.id}' is not defined in system '${system.id}'`,
+          code: 'UNKNOWN_EDGE',
+        });
+      }
+    }
+    if (passive.metadata?.['system_type'] === 'hindrance' && passive.id) {
+      const hindranceDef = system.getHindrance(passive.id);
+      if (!hindranceDef) {
+        warnings.push({
+          path: `$.capabilities.passive[id=${passive.id}]`,
+          message: `Hindrance '${passive.id}' is not defined in system '${system.id}'`,
+          code: 'UNKNOWN_HINDRANCE',
+        });
+      }
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+    warnings: warnings.length > 0 ? warnings : undefined,
+  };
+}

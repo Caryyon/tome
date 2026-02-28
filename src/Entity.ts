@@ -17,7 +17,8 @@ import type {
   InventoryItem,
 } from './types';
 import { EntityType, TomeVersion, TomeFormat } from './types';
-import { validateEntity, generateId, generateTimestamp } from './validation';
+import { validateEntity, generateId, generateTimestamp, validateEntityAgainstSystem } from './validation';
+import type { System } from './System';
 
 export class Entity {
   private data: TomeEntity;
@@ -500,5 +501,26 @@ export class Entity {
     }
 
     return obj;
+  }
+
+  /**
+   * Validates the entity against both the base Tome schema AND a loaded game
+   * system definition. Useful when meta.system is set and you want to check
+   * that attributes, skills, and die values are valid for that system.
+   *
+   * @param system A System instance (id should match entity.meta.system)
+   */
+  validateWithSystem(system: System): ValidationResult {
+    const baseResult = this.validate();
+    const systemResult = validateEntityAgainstSystem(this.data, system);
+
+    return {
+      valid: baseResult.valid && systemResult.valid,
+      errors: [...baseResult.errors, ...systemResult.errors],
+      warnings: [
+        ...(baseResult.warnings ?? []),
+        ...(systemResult.warnings ?? []),
+      ],
+    };
   }
 }

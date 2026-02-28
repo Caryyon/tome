@@ -22,6 +22,7 @@ export enum TomeFormat {
   Entity = 'entity',
   Container = 'container',
   Exchange = 'exchange',
+  System = 'system',
 }
 
 /**
@@ -322,4 +323,149 @@ export interface ImportOptions {
 export interface ExportOptions {
   pretty?: boolean; // Pretty-print JSON (default: true)
   includeDefaults?: boolean; // Include optional empty fields (default: false)
+}
+
+/**
+ * Requirement for an edge or feat
+ */
+export interface EdgeRequirement {
+  type: 'attribute' | 'skill' | 'edge' | 'rank' | 'other';
+  id?: string;
+  min_die?: number;   // For step-die systems (e.g., d8 = 8)
+  min_rank?: number;  // For rank-based systems
+  description?: string;
+}
+
+/**
+ * Effect applied by an edge, hindrance, or ability
+ */
+export interface EdgeEffect {
+  type: 'bonus' | 'penalty' | 'replace' | 'special';
+  target?: string;
+  value?: number | string;
+  description?: string;
+}
+
+/**
+ * A named edge (feat, talent, advantage) in a game system
+ */
+export interface SystemEdge {
+  label: string;
+  category?: string;
+  requirements?: EdgeRequirement[];
+  effects?: EdgeEffect[];
+  description?: string;
+}
+
+/**
+ * A named hindrance (flaw, disadvantage) in a game system
+ */
+export interface SystemHindrance {
+  label: string;
+  severity?: 'minor' | 'major' | string;
+  effects?: Array<{
+    type: string;
+    target?: string;
+    value?: number | string;
+    description?: string;
+  }>;
+  description?: string;
+}
+
+/**
+ * Game system definition -- a first-class Tome file that describes the rules
+ * of a tabletop RPG system: attributes, skills, edges, hindrances, derived stats,
+ * resource pools, and character creation rules.
+ *
+ * Systems are the "schema" layer; Entities are the "data" layer.
+ * An entity references a system via meta.system to declare which rules apply.
+ */
+export interface GameSystem {
+  /** Tome metadata -- format is always 'system' */
+  tome: TomeMetadata & { format: 'system' };
+
+  /** System identity */
+  meta: {
+    id: string;         // e.g., "savage-worlds-swade"
+    name: string;       // e.g., "Savage Worlds Adventure Edition"
+    publisher?: string;
+    version?: string;   // e.g., "swade", "2024"
+    engine?: string;    // e.g., "savage-worlds", "year-zero-engine", "d20"
+    tags?: string[];
+    /** ID of a parent system this one extends (inheritance not yet implemented) */
+    parent?: string;
+  };
+
+  /** Core mechanical properties of the system */
+  mechanics: {
+    dice?: number[];      // Valid die sizes, e.g. [4,6,8,10,12] or [6] for YZE
+    roll_type?: 'step' | 'pool' | 'single' | 'percentile';
+    [key: string]: unknown; // Allow system-specific mechanics (e.g., wild_die, push_rolls)
+  };
+
+  /**
+   * Attributes (core stats). Supports die-step systems (Savage Worlds)
+   * and point-buy systems (Year Zero Engine).
+   */
+  attributes?: {
+    [id: string]: {
+      label: string;
+      die?: number;         // Default die size (step systems)
+      die_steps?: number[]; // Valid die sizes (step systems)
+      min?: number;         // Minimum value (point-buy systems)
+      max?: number;         // Maximum value
+      default?: number;     // Default starting value
+    };
+  };
+
+  /** Skills, optionally linked to an attribute */
+  skills?: {
+    [id: string]: {
+      label: string;
+      attribute?: string; // Linked attribute id
+      die?: number;       // Default die size (step systems)
+      min?: number;
+      max?: number;
+    };
+  };
+
+  /** Character-level rules: creation budgets and derived stat formulas */
+  character?: {
+    creation?: {
+      attribute_points?: number;
+      skill_points?: number;
+      starting_advances?: number;
+      [key: string]: unknown;
+    };
+    derived?: {
+      [id: string]: {
+        label: string;
+        formula: string; // e.g., "2 + floor(vigor_die / 2)"
+      };
+    };
+  };
+
+  /** Resource pools (HP, stress, bennies, ammo, etc.) */
+  resources?: {
+    [id: string]: {
+      label: string;
+      default?: number | string;
+      min?: number;
+      max?: number | string;
+      formula?: string; // e.g., "strength * 2 + 10"
+    };
+  };
+
+  /** Edges, feats, talents -- optional advantages characters can acquire */
+  edges?: {
+    [id: string]: SystemEdge;
+  };
+
+  /** Hindrances, flaws, disadvantages */
+  hindrances?: {
+    [id: string]: SystemHindrance;
+  };
+
+  /** Anything system-specific that does not fit the schema above */
+  extensions?: Record<string, unknown>;
 }
