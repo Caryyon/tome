@@ -60,8 +60,8 @@ export const LIBRARY_NAME = 'Tome';
 export { System } from './System';
 export type {
   GameSystem,
-  SystemEdge,
-  SystemHindrance,
-  EdgeRequirement,
-  EdgeEffect,
+  SystemTrait,
+
+  TraitRequirement,
+  TraitEffect,
 } from './types';

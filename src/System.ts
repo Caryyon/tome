@@ -2,7 +2,7 @@
  * System class -- represents a game system definition.
  *
  * Systems are the "schema" layer of Tome. They describe the rules of a
- * tabletop RPG system: attributes, skills, edges, hindrances, derived stats,
+ * tabletop RPG system: attributes, skills, traits, derived stats,
  * resource pools, and character creation budgets.
  *
  * Entities are the "data" layer. An entity references a system via meta.system.
@@ -95,14 +95,21 @@ export class System {
     return this.data.skills?.[id];
   }
 
-  /** Returns the edge definition for the given id, or undefined. */
-  getEdge(id: string): NonNullable<GameSystem['edges']>[string] | undefined {
-    return this.data.edges?.[id];
+  /** Returns the trait definition for the given id, or undefined. */
+  getTrait(id: string): NonNullable<GameSystem['traits']>[string] | undefined {
+    return this.data.traits?.[id];
   }
 
-  /** Returns the hindrance definition for the given id, or undefined. */
-  getHindrance(id: string): NonNullable<GameSystem['hindrances']>[string] | undefined {
-    return this.data.hindrances?.[id];
+  /**
+   * Returns all traits in the system, optionally filtered by polarity.
+   * polarity: 'positive' (advantages/feats), 'negative' (flaws/disadvantages), 'neutral'
+   */
+  getTraits(polarity?: 'positive' | 'negative' | 'neutral'): NonNullable<GameSystem['traits']> {
+    const all = this.data.traits ?? {};
+    if (!polarity) return all;
+    return Object.fromEntries(
+      Object.entries(all).filter(([, t]) => t.polarity === polarity)
+    );
   }
 
   /** Returns the valid die sizes for this system (step systems only). */

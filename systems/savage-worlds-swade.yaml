@@ -44,43 +44,52 @@ resources:
   bennies: { label: Bennies, default: 3 }
   wounds:  { label: Wounds,  min: 0, max: 3 }
 
-edges:
+traits:
+  # Positive traits (edges)
   alertness:
     label: Alertness
     category: background
+    polarity: positive
     requirements:
       - { type: skill, id: notice, min_die: 6 }
     effects:
       - { type: bonus, target: notice, value: 2 }
-    description: The character is unusually alert.
+    description: The character is unusually alert and hard to surprise.
   ambidextrous:
     label: Ambidextrous
     category: background
+    polarity: positive
     requirements:
       - { type: attribute, id: agility, min_die: 8 }
-    description: Ignores off-hand penalty.
+    description: Ignores the off-hand penalty.
   block:
     label: Block
     category: combat
+    polarity: positive
     requirements:
       - { type: skill, id: fighting, min_die: 8 }
     effects:
       - { type: bonus, target: parry, value: 1 }
     description: +1 Parry.
-
-hindrances:
+  # Negative traits (hindrances)
   all_thumbs:
     label: All Thumbs
+    category: background
+    polarity: negative
     severity: minor
     effects:
       - { type: penalty, target: repair, value: -2 }
-    description: -2 to Repair rolls. On a Critical Failure uses tech, it breaks.
+    description: -2 to Repair rolls. On a Critical Failure with tech, it breaks.
   arrogant:
     label: Arrogant
+    category: background
+    polarity: negative
     severity: major
-    description: Must challenge the most powerful foe.
+    description: Must challenge the most powerful foe present.
   bad_luck:
     label: Bad Luck
+    category: background
+    polarity: negative
     severity: major
     effects:
       - { type: replace, target: bennies, value: 2 }

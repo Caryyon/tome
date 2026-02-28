@@ -8,8 +8,8 @@
  * Field mapping:
  *   traits (attributes)  -> properties.static  (die value as number)
  *   skills               -> properties.static  (die value as number)
- *   edges                -> capabilities.passive (metadata.system_type = 'edge')
- *   hindrances           -> capabilities.passive (metadata.system_type = 'hindrance')
+ *   edges                -> capabilities.passive (metadata.system_type = 'trait', polarity = 'positive')
+ *   hindrances           -> capabilities.passive (metadata.system_type = 'trait', polarity = 'negative')
  *   derived stats        -> properties.computed
  *   wounds / bennies     -> resources
  */
@@ -99,7 +99,7 @@ export function savegedToTome(pc: SavedPlayerCharacter): TomeEntity {
   if (pc.derived?.parry !== undefined) computedProps['parry'] = pc.derived.parry;
   if (pc.derived?.toughness !== undefined) computedProps['toughness'] = pc.derived.toughness;
 
-  // Passive capabilities: edges
+  // Passive capabilities: traits (edges)
   const passives: Capability[] = [];
 
   for (const edge of pc.edges ?? []) {
@@ -107,23 +107,25 @@ export function savegedToTome(pc: SavedPlayerCharacter): TomeEntity {
       id: edge.id,
       name: edge.name,
       description: edge.description ?? '',
-      type: 'edge',
+      type: 'trait',
       metadata: {
-        system_type: 'edge',
+        system_type: 'trait',
+        polarity: 'positive',
         category: edge.category,
       },
     });
   }
 
-  // Passive capabilities: hindrances (stored alongside edges in passive array)
+  // Passive capabilities: traits (hindrances)
   for (const hindrance of pc.hindrances ?? []) {
     passives.push({
       id: hindrance.id,
       name: hindrance.name,
       description: hindrance.description ?? '',
-      type: 'hindrance',
+      type: 'trait',
       metadata: {
-        system_type: 'hindrance',
+        system_type: 'trait',
+        polarity: 'negative',
         severity: hindrance.severity,
       },
     });

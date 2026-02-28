@@ -326,20 +326,21 @@ export interface ExportOptions {
 }
 
 /**
- * Requirement for an edge or feat
+ * Requirement for a trait (advantage, disadvantage, or neutral ability)
  */
-export interface EdgeRequirement {
-  type: 'attribute' | 'skill' | 'edge' | 'rank' | 'other';
+export interface TraitRequirement {
+  type: 'attribute' | 'skill' | 'trait' | 'rank' | 'other';
   id?: string;
-  min_die?: number;   // For step-die systems (e.g., d8 = 8)
-  min_rank?: number;  // For rank-based systems
+  min_die?: number;    // For step-die systems (e.g., d8 = 8)
+  min_rank?: number;   // For rank-based systems
+  min_value?: number;  // For point-buy systems
   description?: string;
 }
 
 /**
- * Effect applied by an edge, hindrance, or ability
+ * Effect applied by a trait or ability
  */
-export interface EdgeEffect {
+export interface TraitEffect {
   type: 'bonus' | 'penalty' | 'replace' | 'special';
   target?: string;
   value?: number | string;
@@ -347,34 +348,22 @@ export interface EdgeEffect {
 }
 
 /**
- * A named edge (feat, talent, advantage) in a game system
+ * A named trait (advantage, disadvantage, feat, flaw, talent, etc.)
+ * in a game system.
  */
-export interface SystemEdge {
+export interface SystemTrait {
   label: string;
-  category?: string;
-  requirements?: EdgeRequirement[];
-  effects?: EdgeEffect[];
-  description?: string;
-}
-
-/**
- * A named hindrance (flaw, disadvantage) in a game system
- */
-export interface SystemHindrance {
-  label: string;
-  severity?: 'minor' | 'major' | string;
-  effects?: Array<{
-    type: string;
-    target?: string;
-    value?: number | string;
-    description?: string;
-  }>;
+  category?: string;                               // System-defined grouping, e.g. "combat", "background"
+  polarity?: 'positive' | 'negative' | 'neutral';  // positive = advantage/feat, negative = flaw/disadvantage
+  severity?: string;                               // System-defined weight, e.g. "minor", "major"
+  requirements?: TraitRequirement[];
+  effects?: TraitEffect[];
   description?: string;
 }
 
 /**
  * Game system definition -- a first-class Tome file that describes the rules
- * of a tabletop RPG system: attributes, skills, edges, hindrances, derived stats,
+ * of a tabletop RPG system: attributes, skills, traits, derived stats,
  * resource pools, and character creation rules.
  *
  * Systems are the "schema" layer; Entities are the "data" layer.
@@ -456,14 +445,9 @@ export interface GameSystem {
     };
   };
 
-  /** Edges, feats, talents -- optional advantages characters can acquire */
-  edges?: {
-    [id: string]: SystemEdge;
-  };
-
-  /** Hindrances, flaws, disadvantages */
-  hindrances?: {
-    [id: string]: SystemHindrance;
+  /** Traits -- advantages, disadvantages, feats, flaws, and other named abilities */
+  traits?: {
+    [id: string]: SystemTrait;
   };
 
   /** Anything system-specific that does not fit the schema above */

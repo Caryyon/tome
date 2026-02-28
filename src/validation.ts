@@ -427,26 +427,16 @@ export function validateEntityAgainstSystem(
     }
   }
 
-  // Check passive capabilities that look like edge references
+  // Check passive capabilities that look like trait references
   const passives = entity.capabilities?.passive ?? [];
   for (const passive of passives) {
-    if (passive.metadata?.['system_type'] === 'edge' && passive.id) {
-      const edgeDef = system.getEdge(passive.id);
-      if (!edgeDef) {
+    if (passive.metadata?.['system_type'] === 'trait' && passive.id) {
+      const traitDef = system.getTrait(passive.id);
+      if (!traitDef) {
         warnings.push({
           path: `$.capabilities.passive[id=${passive.id}]`,
-          message: `Edge '${passive.id}' is not defined in system '${system.id}'`,
-          code: 'UNKNOWN_EDGE',
-        });
-      }
-    }
-    if (passive.metadata?.['system_type'] === 'hindrance' && passive.id) {
-      const hindranceDef = system.getHindrance(passive.id);
-      if (!hindranceDef) {
-        warnings.push({
-          path: `$.capabilities.passive[id=${passive.id}]`,
-          message: `Hindrance '${passive.id}' is not defined in system '${system.id}'`,
-          code: 'UNKNOWN_HINDRANCE',
+          message: `Trait '${passive.id}' is not defined in system '${system.id}'`,
+          code: 'UNKNOWN_TRAIT',
         });
       }
     }
